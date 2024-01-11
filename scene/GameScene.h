@@ -8,6 +8,16 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#include "Player.h"
+#include "Enemy.h"
+#include "FollowCamera.h"
+
+#include "Skydome.h"
+#include "Ground.h"
+
+#include <memory>
+#include "DebugCamera.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -44,6 +54,34 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	std::unique_ptr<Player> player_;
+
+	std::unique_ptr<Enemy> enemy_;
+
+	std::unique_ptr<FollowCamera> followCamera_;
+
+	std::unique_ptr<Skydome> skydome_;
+
+	std::unique_ptr<Ground> ground_;
+
+	DebugCamera* debugCamera_ = nullptr;
+	WorldTransform worldTransform_;
+
+	std::unique_ptr<Model> modelPlayer_;
+
+	std::unique_ptr<Model> modelEnemy_;
+
+	std::unique_ptr<Model> modelSkydome_;
+	std::unique_ptr<Model> modelGround_;
+
+	std::unique_ptr<Model> modelFighterBody_;
+	std::unique_ptr<Model> modelFighterHead_;
+	std::unique_ptr<Model> modelFighterL_arm;
+	std::unique_ptr<Model> modelFighterR_arm;
+
+	ViewProjection viewProjection_;
+
+	bool isDebugCameraActive_ = false;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
