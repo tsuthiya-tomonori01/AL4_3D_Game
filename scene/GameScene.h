@@ -18,6 +18,8 @@
 #include <memory>
 #include "DebugCamera.h"
 
+#include "Scene.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -48,6 +50,9 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool IsSceneEnd() { return isSceneEnd; }
+	SceneType NextScene() { return SceneType::kGamePlay; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -82,6 +87,9 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	bool isDebugCameraActive_ = false;
+
+	bool isSceneEnd = false;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

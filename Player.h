@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
+#include <optional>
 
 #include "BaseCharacter.h"
 
@@ -16,7 +17,7 @@ class Player : public BaseCharacter{
 
 	void Draw(const ViewProjection& viewProjectio) override;
 
-	const WorldTransform& GetWorldTransform() { return worldTransformBody_; }
+	const WorldTransform& GetWorldTransform() { return worldTransform_; }
 
 	void SetViewProjection(const ViewProjection* viewProjection) {
 		viewProjection_ = viewProjection;
@@ -27,6 +28,18 @@ class Player : public BaseCharacter{
 
 	// 浮遊ギミックに更新
 	void UpdateFloatingGimmick();
+
+	//通常行動初期化
+	void BehaviorRootInitialize();
+
+	//通常行動更新
+	void BehaviorRootUpdate();
+
+	//ジャンプ行動初期化
+	void BehaviorJumpInitialize();
+
+	//ジャンプ行動更新
+	void BehaviorJumpUpdate();
 
 private:
 
@@ -45,4 +58,22 @@ private:
 	Vector3 velocity_ = {};
 
 	float floatingParameter_ = 0.0f;
+
+	enum class Behavior {
+		kRoot,
+		kJump,
+	};
+
+	/*enum class modeles_ {
+		kModelIndexBody,
+		kModelIndexHead,
+		kModelIndexL_arm,
+		kModelIndexR_arm,
+	};*/
+
+	Behavior behavior_ = Behavior::kRoot;
+
+	bool playerFlag = true;
+
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 };

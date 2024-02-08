@@ -21,18 +21,19 @@ void GameScene::Initialize() {
 	modelFighterL_arm.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_arm.reset(Model::CreateFromOBJ("float_R_arm", true));
 
-	std::vector<Model*> model = {
+	std::vector<Model*> modelPlayer = {
 	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm.get(),
 	    modelFighterR_arm.get()};
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize(model);
+	player_->Initialize(modelPlayer);
 
 	modelEnemy_.reset(Model::CreateFromOBJ("needle_Body", true));
 
-	std::vector<Model*> modelE = {modelEnemy_.get()};
+	std::vector<Model*> modelEnemy = {modelEnemy_.get()};
+
 	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize(modelE);
+	enemy_->Initialize(modelEnemy);
 
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
@@ -74,6 +75,13 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 	}
+
+	if (isSceneEnd == false) {
+
+
+
+	}
+
 }
 
 void GameScene::Draw() {

@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
-#include <cassert>
 #include "MathUtility.h"
+#include <cassert>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -32,33 +32,32 @@ void Player::Initialize(const std::vector<Model*>& models) {
 }
 
 void Player::Update() {
+	if (behaviorRequest_) {
 
-	BaseCharacter::Update();
+		behavior_ = behaviorRequest_.value();
 
-	XINPUT_STATE joyState;
-
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-
-		const float speed = 0.3f;
-
-		velocity_ = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
-
-		velocity_ = Multiply(speed, Normalize(velocity_));
-
-		Matrix4x4 rotate = MakeRotateMatrix(viewProjection_->rotation_);
-
-		// ここでカメラの角度分進ベクトルを回転させてる
-		velocity_ = TransformNormal(velocity_, rotate);
-
-		worldTransformBody_.translation_ = Add(worldTransformBody_.translation_, velocity_);
-
-		worldTransformBody_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();
+			break;
+		case Behavior::kJump:
+			BehaviorJumpInitialize();
+			break;
+		}
+		behaviorRequest_ = std::nullopt;
+	}
+	switch (behavior_) {
+	case Behavior::kRoot:
+	default:
+		BehaviorRootUpdate();
+		break;
+	case Behavior::kJump:
+		BehaviorJumpUpdate();
+		break;
 	}
 
-	UpdateFloatingGimmick();
-
+	BaseCharacter::Update();
 	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
@@ -71,7 +70,6 @@ void Player::Draw(const ViewProjection& viewProjection) {
 	models_[1]->Draw(worldTransformHead_, viewProjection);
 	models_[2]->Draw(worldTransformL_arm_, viewProjection);
 	models_[3]->Draw(worldTransformR_arm_, viewProjection);
-
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -95,4 +93,76 @@ void Player::UpdateFloatingGimmick() {
 
 	//
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * Width_F;
+}
+
+void Player::BehaviorRootInitialize() {}
+
+void Player::BehaviorRootUpdate() {
+
+	XINPUT_STATE joyState;
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+
+		const float speed = 0.3f;
+
+		velocity_ = {
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+
+		velocity_ = Multiply(speed, Normalize(velocity_));
+
+		Matrix4x4 rotate = MakeRotateMatrix(viewProjection_->rotation_);
+
+		// ここでカメラの角度分進ベクトルを回転させてる
+		velocity_ = TransformNormal(velocity_, rotate);
+
+		worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+
+		worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
+	}
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+
+		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B) {
+
+			behaviorRequest_ = Behavior::kJump;
+		}
+	}
+
+	UpdateFloatingGimmick();
+
+}
+
+void Player::BehaviorJumpInitialize() {
+
+	if (behavior_ == Behavior::kJump) {
+		
+		worldTransform_.translation_.y = 0;
+		worldTransformL_arm_.rotation_.x = 0;
+		worldTransformR_arm_.rotation_.x = 0;
+
+		const float kJumpFirstSpeed = 3.0f;
+
+		velocity_.y = kJumpFirstSpeed;
+	}
+}
+
+void Player::BehaviorJumpUpdate() {
+
+	if (behavior_ == Behavior::kJump) {
+
+		worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+
+		const float kGravityAcceleration = 0.25f;
+
+		Vector3 accelerationVector = {0, -kGravityAcceleration, 0};
+
+		velocity_ = Add(velocity_, accelerationVector);
+	}
+
+	if (worldTransform_.translation_.y <= 0.0f) {
+		worldTransform_.translation_.y = 0;
+
+		behaviorRequest_ = Behavior::kRoot;
+	}
 }

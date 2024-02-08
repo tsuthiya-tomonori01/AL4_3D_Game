@@ -26,9 +26,10 @@ void FollowCamera::Update() {
 		//Matrix4x4 rotate1 = MakeRotateXMatrix(viewProjection_.rotation_.x);
 
 		offset = TransformNormal(offset, MakeRotateYMatrix(viewProjection_.rotation_.y));
-		//offset = TransformNormal(offset, MakeRotateXMatrix(viewProjection_.rotation_.x));
+		///offset = TransformNormal(offset, MakeRotateXMatrix(viewProjection_.rotation_.x));
 
 		viewProjection_.translation_ = Add(target_->translation_, offset);
+		//viewProjection_.translation_ = Add(target_->translation_, offset);
 	}
 	viewProjection_.UpdateMatrix();
 }
