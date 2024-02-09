@@ -1,21 +1,22 @@
-#include "Enemy.h"
+﻿#include "Enemy_1.h"
+
 #include "MathUtility.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-void Enemy::Initialize(const std::vector<Model*>& models) {
+void Enemy_1::Initialize(const std::vector<Model*>& models) {
 
 	BaseCharacter::Initialize(models);
 
 	worldTransformEnemy_.Initialize();
 
-	worldTransform_.translation_.x = 0.0f;
+	worldTransform_.translation_.x = -20.0f;
 	worldTransform_.translation_.y = 0.0f;
-	worldTransform_.translation_.z = -20.0f;
+	worldTransform_.translation_.z = 0.0f;
 }
 
-void Enemy::Update() {
+void Enemy_1::Update() {
 
 	BaseCharacter::Update();
 
@@ -29,20 +30,19 @@ void Enemy::Update() {
 
 	move = TransformNormal(move, matRotY);
 
-	worldTransform_.translation_ = Add(move,worldTransform_.translation_);
+	worldTransform_.translation_ = Add(move, worldTransform_.translation_);
 
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw(const ViewProjection& viewProjection) {
+void Enemy_1::Draw(const ViewProjection& viewProjection) {
 
 	models_[0]->Draw(worldTransform_, viewProjection);
-
 }
 
-void Enemy::OnCollision() {}
+void Enemy_1::OnCollision() {}
 
-Vector3 Enemy::GetWorldPosition() {
+Vector3 Enemy_1::GetWorldPosition() {
 	Vector3 worldPos = {};
 
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
@@ -52,9 +52,8 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::Reset() {
+void Enemy_1::Reset() { 
 
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, -25.0f};
-
+	worldTransform_.translation_ = {-25.0f, 0.0f, 0.0f}; 
 }

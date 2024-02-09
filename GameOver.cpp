@@ -1,21 +1,24 @@
-#include "TitleScene.h"
-#include "TextureManager.h"
+﻿#include "GameOver.h"
 
-TitleScene::TitleScene() {}
+GameOver::GameOver() {}
 
-TitleScene::~TitleScene() {}
+GameOver::~GameOver() {
 
-void TitleScene::Initialize() {
+	delete spriteGO_; 
+}
+
+void GameOver::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	textureHandle_ = TextureManager::Load("titel.png");
-	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+	textureHandleGO_ = TextureManager::Load("gameover.png");
+	spriteGO_ = Sprite::Create(textureHandleGO_, {0, 0});
+
 }
 
-void TitleScene::Update() {
+void GameOver::Update() {
 
 	XINPUT_STATE joyState;
 	XINPUT_STATE joyStatePre;
@@ -27,23 +30,23 @@ void TitleScene::Update() {
 			if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B &&
 			    joyStatePre.Gamepad.wButtons != XINPUT_GAMEPAD_B) {
 				isSceneEnd = true;
-				
 			}
 		}
 	} 
 	else 
 	{
 		isSceneEnd = false;
-    }
+	}
+
 }
 
-void TitleScene::Draw() {
+void GameOver::Draw() {
 
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 	Sprite::PreDraw(commandList);
 
-	sprite_->Draw();
+	spriteGO_->Draw();
 
 	Sprite::PostDraw();
 

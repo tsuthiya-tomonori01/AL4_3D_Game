@@ -15,7 +15,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.Initialize();
 
 	worldTransformBody_.translation_.y = 0.0f;
-	worldTransformHead_.translation_.y = 1.5f;
+	worldTransformHead_.translation_.y = 1.2f;
 
 	worldTransformL_arm_.translation_.y = 1.25f;
 	worldTransformL_arm_.translation_.x = -0.5f;
@@ -165,4 +165,27 @@ void Player::BehaviorJumpUpdate() {
 
 		behaviorRequest_ = Behavior::kRoot;
 	}
+}
+
+void Player::OnCollision() {
+
+	PlayerIsDead = true;
+
+}
+
+Vector3 Player::GetWorldPosition() {
+
+	Vector3 worldPos = {};
+
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
+void Player::Reset() {
+
+	PlayerIsDead = false;
+	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 }

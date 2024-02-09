@@ -3,6 +3,8 @@
 #include "DirectXCommon.h"
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "GameOver.h"
+#include "GameClear.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
@@ -19,6 +21,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
 	TitleScene* titleScene = nullptr;
+	GameOver* gameOver = nullptr;
+	GameClear* gameClear = nullptr;
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -66,6 +70,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	titleScene = new TitleScene();
 	titleScene->Initialize();
 
+	gameOver = new GameOver();
+	gameOver->Initialize();
+
+	gameClear = new GameClear();
+	gameClear->Initialize();
+
 	SceneType sceneNo = SceneType::kTitle;
 
 	// メインループ
@@ -97,12 +107,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			gameScene->Update();
 
-			if (gameScene->IsSceneEnd()) {
+			if (gameScene->IsSceneEnd_1()) {
 
-				sceneNo = gameScene->NextScene();
+				sceneNo = gameScene->NextScene_1();
+			}
+
+			else if (gameScene->IsSceneEnd_2()) {
+
+				sceneNo = gameScene->NextScene_2();
 			}
 
 			break;
+
+		case SceneType::kGameOver:
+
+			gameOver->Update();
+
+			if (gameOver->IsSceneEnd()) {
+
+				sceneNo = gameOver->NextScene();
+			}
+
+			break;
+
+		case SceneType::kGameClear:
+
+			gameClear->Update();
+			
+			if (gameClear->IsSceneEnd()) {
+
+				sceneNo = gameClear->NextScene();
+			}
 		}
 
 		// 軸表示の更新
@@ -122,6 +157,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case SceneType::kGamePlay:
 			gameScene->Draw();
 			break;
+		case SceneType::kGameOver:
+			gameOver->Draw();
+			break;
+		case SceneType::kGameClear:
+			gameClear->Draw();
+			break;
 		}
 
 		// 軸表示の描画
@@ -137,6 +178,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete gameScene;
 	delete titleScene;
+	delete gameOver;
+	delete gameClear;
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();

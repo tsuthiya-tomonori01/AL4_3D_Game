@@ -41,6 +41,14 @@ class Player : public BaseCharacter{
 	//ジャンプ行動更新
 	void BehaviorJumpUpdate();
 
+	void OnCollision();
+
+	Vector3 GetWorldPosition();
+
+	void Reset();
+
+	const bool&GetPlayerIsDead() { return PlayerIsDead; }
+
 private:
 
 	WorldTransform worldTransformBody_;
@@ -73,7 +81,7 @@ private:
 
 	Behavior behavior_ = Behavior::kRoot;
 
-	bool playerFlag = true;
+	bool PlayerIsDead = false;
 
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 };

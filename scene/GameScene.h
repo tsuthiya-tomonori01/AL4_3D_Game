@@ -10,6 +10,8 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "Enemy_1.h"
+#include "Enemy_2.h"
 #include "FollowCamera.h"
 
 #include "Skydome.h"
@@ -51,8 +53,14 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	bool IsSceneEnd() { return isSceneEnd; }
-	SceneType NextScene() { return SceneType::kGamePlay; }
+	void TimerReset();
+
+	void CheckAllCollisions();
+
+	bool IsSceneEnd_1() { return isSceneEnd_1; }
+	bool IsSceneEnd_2() { return isSceneEnd_2; }
+	SceneType NextScene_1() { return SceneType::kGameOver; }
+	SceneType NextScene_2() { return SceneType::kGameClear; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -62,6 +70,10 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 
 	std::unique_ptr<Enemy> enemy_;
+
+	std::unique_ptr<Enemy_1> enemy_1_;
+
+	std::unique_ptr<Enemy_2> enemy_2_;
 
 	std::unique_ptr<FollowCamera> followCamera_;
 
@@ -76,6 +88,10 @@ private: // メンバ変数
 
 	std::unique_ptr<Model> modelEnemy_;
 
+	std::unique_ptr<Model> modelEnemy_1_;
+
+	std::unique_ptr<Model> modelEnemy_2_;
+
 	std::unique_ptr<Model> modelSkydome_;
 	std::unique_ptr<Model> modelGround_;
 
@@ -88,7 +104,15 @@ private: // メンバ変数
 
 	bool isDebugCameraActive_ = false;
 
-	bool isSceneEnd = false;
+	bool isSceneEnd_1 = false;
+	bool isSceneEnd_2 = false;
+
+	int GamePlayFlame_ = 1200;
+
+	const float PlayerRadius = 0.7f;
+	const float EnemyRadius = 0.7f;
+	const float EnemyRadius_1 = 0.7f;
+	const float EnemyRadius_2 = 0.7f;
 
 	/// <summary>
 	/// ゲームシーン用

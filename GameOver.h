@@ -1,18 +1,20 @@
-#pragma once
+﻿#pragma once
 #include "Audio.h"
 #include "DirectXCommon.h"
+#include "TextureManager.h"
 #include "Input.h"
 #include "Model.h"
 #include "SafeDelete.h"
 #include "Scene.h"
 #include "Sprite.h"
 
-class TitleScene {
+class GameOver {
+
 public:
 
-	TitleScene();
+	GameOver();
 
-	~TitleScene();
+	~GameOver();
 
 	void Initialize();
 
@@ -21,7 +23,7 @@ public:
 	void Draw();
 
 	bool IsSceneEnd() { return isSceneEnd; }
-	SceneType NextScene() { return SceneType::kGamePlay; }
+	SceneType NextScene() { return SceneType::kTitle; }
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -31,8 +33,8 @@ private:
 
 	bool isSceneEnd = false;
 
-	uint32_t textureHandle_ = 0;
+	uint32_t textureHandleGO_ = 0;
 
-	Sprite* sprite_ = nullptr;
+	Sprite* spriteGO_ = nullptr;
 
 };
