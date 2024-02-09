@@ -35,6 +35,8 @@ void GameScene::Initialize() {
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize(modelEnemy);
 
+	enemy_->SetTarget(&player_->GetWorldTransform());
+
 	modelEnemy_1_.reset(Model::CreateFromOBJ("needle_Body", true));
 
 	std::vector<Model*> modelEnemy_1 = {modelEnemy_1_.get()};

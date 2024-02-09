@@ -26,7 +26,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow();
+	win->CreateGameWindow(L"LE2C_18_ツチヤ_トモノリ_かわせ！！");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();

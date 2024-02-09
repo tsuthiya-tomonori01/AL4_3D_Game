@@ -16,9 +16,15 @@ public:
 
 	void Reset();
 
+	void SetTarget(const WorldTransform* target) { target_ = target; }
+
 private:
 
 	WorldTransform worldTransformEnemy_;
 
+	const WorldTransform* target_ = nullptr;
+
 	ViewProjection* viewProjection_;
+
+	
 };
