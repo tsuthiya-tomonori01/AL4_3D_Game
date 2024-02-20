@@ -8,6 +8,9 @@
 #include "Scene.h"
 #include "Sprite.h"
 
+#include "FadeIn.h"
+#include "FadeOut.h"
+
 class GameClear {
 public:
 
@@ -33,8 +36,15 @@ private:
 
 	bool isSceneEnd = false;
 
+	bool FadeOutFlag = false;
+
 	uint32_t textureHandleGC_ = 0;
 
 	Sprite* spriteGC_ = nullptr;
 
+	FadeIn* fadeIn_ = nullptr;
+	FadeOut* fadeOut_ = nullptr;
+
+	XINPUT_STATE joyState;
+	XINPUT_STATE joyStatePre;
 };

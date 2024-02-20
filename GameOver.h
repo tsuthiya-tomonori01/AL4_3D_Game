@@ -8,6 +8,9 @@
 #include "Scene.h"
 #include "Sprite.h"
 
+#include "FadeIn.h"
+#include "FadeOut.h"
+
 class GameOver {
 
 public:
@@ -33,8 +36,13 @@ private:
 
 	bool isSceneEnd = false;
 
+	bool FadeInFlag = false;
+
 	uint32_t textureHandleGO_ = 0;
 
 	Sprite* spriteGO_ = nullptr;
+
+	FadeIn* fadeIn_ = nullptr;
+	FadeOut* fadeOut_ = nullptr;
 
 };

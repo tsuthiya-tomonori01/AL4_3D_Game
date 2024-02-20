@@ -7,6 +7,8 @@
 #include "Scene.h"
 #include "Sprite.h"
 
+#include "FadeOut.h"
+
 class TitleScene {
 public:
 
@@ -20,6 +22,8 @@ public:
 
 	void Draw();
 
+	void FadeReset();
+
 	bool IsSceneEnd() { return isSceneEnd; }
 	SceneType NextScene() { return SceneType::kGamePlay; }
 
@@ -31,8 +35,19 @@ private:
 
 	bool isSceneEnd = false;
 
+	bool FadeOutFlag = false;
+
+	bool titleMoziFadeIn = false;
+
+	FadeOut* fadeOut_ = nullptr;
+
 	uint32_t textureHandle_ = 0;
+
+	uint32_t textureHandleMozi_ = 0;
 
 	Sprite* sprite_ = nullptr;
 
+	Sprite* spriteM_ = nullptr;
+
+	Vector4 fadeOutMoziColor_ = {1.0f, 1.0f, 1.0f, 0.0f};
 };

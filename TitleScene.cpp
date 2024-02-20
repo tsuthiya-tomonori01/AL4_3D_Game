@@ -3,7 +3,13 @@
 
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() {}
+TitleScene::~TitleScene() {
+
+	delete fadeOut_; 
+
+	delete sprite_;
+	delete spriteM_;
+}
 
 void TitleScene::Initialize() {
 
@@ -11,8 +17,14 @@ void TitleScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	textureHandle_ = TextureManager::Load("titel.png");
+	textureHandleMozi_ = TextureManager::Load("titelMozi.png");
+	spriteM_ = Sprite::Create(textureHandleMozi_, {540, 200});
+
+	textureHandle_ = TextureManager::Load("title.png");
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+
+	fadeOut_ = new FadeOut();
+	fadeOut_->Initialize();
 }
 
 void TitleScene::Update() {
@@ -26,8 +38,16 @@ void TitleScene::Update() {
 			Input::GetInstance()->GetJoystickStatePrevious(0, joyStatePre);
 			if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B &&
 			    joyStatePre.Gamepad.wButtons != XINPUT_GAMEPAD_B) {
-				isSceneEnd = true;
-				
+
+				titleMoziFadeIn = true;
+			}
+		}
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			Input::GetInstance()->GetJoystickStatePrevious(0, joyStatePre);
+			if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B && joyStatePre.Gamepad.wButtons !=
+			        XINPUT_GAMEPAD_B && titleMoziFadeIn == true && fadeOutMoziColor_.w >= 1.0f) {
+
+				FadeOutFlag = true;
 			}
 		}
 	} 
@@ -35,6 +55,30 @@ void TitleScene::Update() {
 	{
 		isSceneEnd = false;
     }
+
+	if (titleMoziFadeIn == true)
+	{
+		fadeOutMoziColor_.w += 0.005f;
+		spriteM_->SetColor(fadeOutMoziColor_);
+
+		if (fadeOutMoziColor_.w >= 1.0f) {
+
+			fadeOutMoziColor_.w = 1.0f;
+		}
+	}
+
+	if (FadeOutFlag == true) {
+
+		fadeOut_->Update();
+	}
+
+	if (fadeOut_->GetFadeOutColor().w >= 1.0) {
+
+		isSceneEnd = true;
+		FadeOutFlag = false;
+		fadeOut_->Reset();
+		FadeReset();
+	}
 }
 
 void TitleScene::Draw() {
@@ -45,6 +89,21 @@ void TitleScene::Draw() {
 
 	sprite_->Draw();
 
+	if (titleMoziFadeIn == true) 
+	{
+		spriteM_->Draw();
+	}
+
+	if (FadeOutFlag == true) {
+
+		fadeOut_->Draw();
+	}
+
 	Sprite::PostDraw();
 
+}
+
+void TitleScene::FadeReset() {
+
+	fadeOutMoziColor_ = {1.0f, 1.0f, 1.0f, 0.0f}; 
 }

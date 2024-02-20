@@ -15,7 +15,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.Initialize();
 
 	worldTransformBody_.translation_.y = 0.0f;
-	worldTransformHead_.translation_.y = 1.2f;
+	worldTransformHead_.translation_.y = 1.25f;
 
 	worldTransformL_arm_.translation_.y = 1.25f;
 	worldTransformL_arm_.translation_.x = -0.5f;
@@ -89,7 +89,7 @@ void Player::UpdateFloatingGimmick() {
 	// ２πを超えたら０に戻す
 	floatingParameter_ = (float)std::fmod(floatingParameter_, 2.0f * M_PI);
 	//
-	const float Width_F = 0.25f;
+	const float Width_F = 0.20f;
 
 	//
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * Width_F;
@@ -187,5 +187,5 @@ Vector3 Player::GetWorldPosition() {
 void Player::Reset() {
 
 	PlayerIsDead = false;
-	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
+	worldTransform_.translation_ = {0.2f, 0.0f, 0.2f};
 }

@@ -5,6 +5,9 @@ GameClear::GameClear() {}
 GameClear::~GameClear() {
 
 	delete spriteGC_;
+
+	delete fadeIn_;
+	delete fadeOut_;
 }
 
 void GameClear::Initialize() {
@@ -15,12 +18,22 @@ void GameClear::Initialize() {
 
 	textureHandleGC_ = TextureManager::Load("GameClear.png");
 	spriteGC_ = Sprite::Create(textureHandleGC_, {0, 0});
+
+	fadeIn_ = new FadeIn();
+	fadeIn_->Initialize();
+
+	fadeOut_ = new FadeOut();
+	fadeOut_->Initialize();
 }
 
 void GameClear::Update() {
 
-	XINPUT_STATE joyState;
-	XINPUT_STATE joyStatePre;
+	
+
+	fadeIn_->Update();
+
+	/*fadeInColorGC_.w -= 0.005f;
+	fadeSpriteGC_->SetColor(fadeInColorGC_);*/
 
 	if (isSceneEnd == false) {
 
@@ -28,13 +41,27 @@ void GameClear::Update() {
 			Input::GetInstance()->GetJoystickStatePrevious(0, joyStatePre);
 			if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B &&
 			    joyStatePre.Gamepad.wButtons != XINPUT_GAMEPAD_B) {
-				isSceneEnd = true;
+
+				FadeOutFlag = true;
 			}
 		}
 	} 
 	else 
 	{
 		isSceneEnd = false;
+	}
+
+	if (FadeOutFlag == true) {
+
+		fadeOut_->Update();
+	}
+
+	if (fadeOut_->GetFadeOutColor().w >= 1.0) {
+
+		isSceneEnd = true;
+		FadeOutFlag = false;
+		fadeIn_->Reset();
+		fadeOut_->Reset();
 	}
 
 }
@@ -46,6 +73,13 @@ void GameClear::Draw() {
 	Sprite::PreDraw(commandList);
 
 	spriteGC_->Draw();
+
+	fadeIn_->Draw();
+
+	if (FadeOutFlag == true) 
+	{
+		fadeOut_->Draw();
+	}
 
 	Sprite::PostDraw();
 

@@ -1,10 +1,16 @@
-#include "GameScene.h"
+﻿#include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
 
+#include "ImGuiManager.h"
+
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+
+	delete fadeIn_; 
+	delete fadeOut_;
+}
 
 void GameScene::Initialize() {
 
@@ -66,18 +72,42 @@ void GameScene::Initialize() {
 
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize(modelGround_.get());
+
+	fadeIn_ = new FadeIn();
+	fadeIn_->Initialize();
+
+	fadeOut_ = new FadeOut();
+	fadeOut_->Initialize();
 }
 
 void GameScene::Update() {
 
-	player_->Update(); 
-	
+	if (isSceneEnd_1 == false && isSceneEnd_2 == false) 
+	{
+		fadeIn_->Update();
+	}
+
+	if (player_->GetPlayerIsDead() == false) 
+	{
+		player_->Update();
+	}
+
 	enemy_->Update();
 	enemy_1_->Update();
 	enemy_2_->Update();
 
 	skydome_->Update();
 	ground_->Update();
+
+	Vector3 EnemySpeed = {
+
+	    player_->GetWorldPosition().x - enemy_->GetWorldPosition().x,
+	    0.0f,
+	    player_->GetWorldPosition().z - enemy_->GetWorldPosition().z,
+
+	};
+
+	enemy_->SetEnemySpeed(EnemySpeed);
 
 	CheckAllCollisions();
 
@@ -98,16 +128,23 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	}
 
-	if (player_->GetPlayerIsDead() == true) {
+	if (player_->GetPlayerIsDead() == true) 
+	{
+		fadeOut_->Update();
 
-		isSceneEnd_1 = true;
+		if (fadeOut_->GetFadeOutColor().w >= 1.0) {
 
-		player_->Reset();
-		enemy_->Reset();
-		enemy_1_->Reset();
-		enemy_2_->Reset();
+			isSceneEnd_1 = true;
 
-		TimerReset();
+			player_->Reset();
+			enemy_->Reset();
+			enemy_1_->Reset();
+			enemy_2_->Reset();
+
+			TimerReset();
+			fadeIn_->Reset();
+			fadeOut_->Reset();
+		}
 	} 
 	else
 	{
@@ -118,14 +155,21 @@ void GameScene::Update() {
 
 	if (GamePlayFlame_ <= 0) {
 
-		isSceneEnd_2 = true;
+		fadeOut_->Update();
 
-		player_->Reset();
-		enemy_->Reset();
-		enemy_1_->Reset();
-		enemy_2_->Reset();
+		if (fadeOut_->GetFadeOutColor().w >= 1.0) {
 
-		TimerReset();
+			isSceneEnd_2 = true;
+
+			player_->Reset();
+			enemy_->Reset();
+			enemy_1_->Reset();
+			enemy_2_->Reset();
+
+			fadeIn_->Reset();
+			fadeOut_->Reset();
+			TimerReset();
+		}
 	} 
 	else 
 	{
@@ -151,8 +195,6 @@ void GameScene::CheckAllCollisions() {
 		enemy_->OnCollision();
 	}
 
-
-	posA = player_->GetWorldPosition();
 	posB = enemy_1_->GetWorldPosition();
 
 	float a1 = posA.x - posB.x;
@@ -167,7 +209,6 @@ void GameScene::CheckAllCollisions() {
 	}
 
 
-	posA = player_->GetWorldPosition();
 	posB = enemy_2_->GetWorldPosition();
 
 	float a2 = posA.x - posB.x;
@@ -184,8 +225,7 @@ void GameScene::CheckAllCollisions() {
 
 void GameScene::TimerReset() {
 
-	GamePlayFlame_ = 1200;
-
+	GamePlayFlame_ = 900;
 }
 
 void GameScene::Draw() {
@@ -212,6 +252,7 @@ void GameScene::Draw() {
 	Model::PreDraw(commandList);
 
 	player_->Draw(viewProjection_);
+
 	enemy_->Draw(viewProjection_);
 	enemy_1_->Draw(viewProjection_);
 	enemy_2_->Draw(viewProjection_);
@@ -230,6 +271,18 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
+
+	fadeIn_->Draw();
+
+	if (GamePlayFlame_ <= 0) 
+	{
+		fadeOut_->Draw();
+	}
+
+	if (player_->GetPlayerIsDead() == true) 
+	{
+		fadeOut_->Draw();
+	}
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -13,6 +13,9 @@
 #include "Enemy_1.h"
 #include "Enemy_2.h"
 #include "FollowCamera.h"
+
+#include "FadeIn.h"
+#include "FadeOut.h"
 
 #include "Skydome.h"
 #include "Ground.h"
@@ -57,6 +60,8 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	//Vector4 GetFadeColor() { return fadeInColor_; }
+
 	bool IsSceneEnd_1() { return isSceneEnd_1; }
 	bool IsSceneEnd_2() { return isSceneEnd_2; }
 	SceneType NextScene_1() { return SceneType::kGameOver; }
@@ -80,6 +85,10 @@ private: // メンバ変数
 	std::unique_ptr<Skydome> skydome_;
 
 	std::unique_ptr<Ground> ground_;
+
+	FadeIn* fadeIn_ = nullptr;
+
+	FadeOut* fadeOut_ = nullptr;
 
 	DebugCamera* debugCamera_ = nullptr;
 	WorldTransform worldTransform_;
@@ -107,7 +116,7 @@ private: // メンバ変数
 	bool isSceneEnd_1 = false;
 	bool isSceneEnd_2 = false;
 
-	int GamePlayFlame_ = 1200;
+	int GamePlayFlame_ = 900;
 
 	const float PlayerRadius = 0.7f;
 	const float EnemyRadius = 0.7f;

@@ -11,9 +11,9 @@ void Enemy_2::Initialize(const std::vector<Model*>& models) {
 
 	worldTransformEnemy_.Initialize();
 
-	worldTransform_.translation_.x = 20.0f;
+	worldTransform_.translation_.x = 0.0f;
 	worldTransform_.translation_.y = 0.0f;
-	worldTransform_.translation_.z = 0.0f;
+	worldTransform_.translation_.z = 20.0f;
 }
 
 void Enemy_2::Update() {

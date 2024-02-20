@@ -1,8 +1,13 @@
 #pragma once
 #include "BaseCharacter.h"
+#include "Player.h"
 
 class Enemy : public BaseCharacter{
 public:
+
+	Enemy();
+
+	~Enemy();
 
 	void Initialize(const std::vector<Model*>& models) override;
 
@@ -14,9 +19,13 @@ public:
 
 	Vector3 GetWorldPosition();
 
+	Vector3 SetWorldPosition();
+
 	void Reset();
 
 	void SetTarget(const WorldTransform* target) { target_ = target; }
+
+	void SetEnemySpeed(Vector3 EnemySpeed);
 
 private:
 
@@ -25,6 +34,8 @@ private:
 	const WorldTransform* target_ = nullptr;
 
 	ViewProjection* viewProjection_;
-
 	
+	Vector3 MoveEnemySpeed = {0.0f, 0.0f, 0.0f};
+
+
 };
